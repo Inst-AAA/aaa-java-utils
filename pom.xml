@@ -17,8 +17,17 @@
 
     <build>
         <plugins>
+	    <plugin>
+		<artifactId>maven-compiler-plugin</artifactId>
+		<version>3.5.1</version>
+		<configuration>
+			<source />
+			<target />
+		</configuration>
+	    </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+	    	<version>3.3.0</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -37,5 +46,10 @@
             <artifactId>jts-core</artifactId>
             <version>1.16.1</version>
         </dependency>
+	<dependency>
+		<groupId>javax.vecmath</groupId>
+		<artifactId>vecmath</artifactId>
+		<version>1.5.2</version>
+	</dependency>
     </dependencies>
 </project>
