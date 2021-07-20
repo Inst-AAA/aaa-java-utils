@@ -18,3 +18,5 @@ install:
   # guo_cam
   - FILE8="-Dfile=./externalLibs/guo_cam_new.jar"
   - mvn install:install-file $FILE8 -DgroupId=com.github.guo -DartifactId=guo-cam -Dversion=0.1 -Dpackaging=jar -DgeneratePom=true
+
+  - mvn install -DskipTests
