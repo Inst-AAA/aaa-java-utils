@@ -1,5 +1,5 @@
 # aaa-jgeo-utils
-java geometry librares from third party
+java geometry libraries from third party
 
 ## Libraries
 [HE_Mesh](https://github.com/wblut/HE_Mesh)  
