@@ -9,7 +9,7 @@ java geometry librares from third party
 	</repositories>
   
   	<dependency>
-	    <groupId>com.github.Inst-AAA</groupId>
-	    <artifactId>moire-wall</artifactId>
-	    <version>Tag</version>
-	</dependency>
+            <groupId>com.github.Inst-AAA</groupId>
+            <artifactId>aaa-jgeo-utils</artifactId>
+            <version>0.1</version>
+        </dependency>
