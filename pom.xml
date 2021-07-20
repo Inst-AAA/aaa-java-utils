@@ -15,44 +15,27 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
-    <profiles>
-	<profile>
-		<id>release</id>
-		<activation>
-			<activeByDefault>true</activeByDefault>
-		</activation>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
 
-		<!-- <repositories>
-			<repository>
-				<id>jitpack.io</id>
-				<url>https://jitpack.io</url>
-			</repository>
-		</repositories> -->
+        </plugins>
+    </build>
 
-		<dependencies>
-			<!-- https://mvnrepository.com/artifact/org.locationtech.jts/jts-core -->
-			<dependency>
-			    <groupId>org.locationtech.jts</groupId>
-			    <artifactId>jts-core</artifactId>
-			    <version>1.16.1</version>
-			</dependency>
-		</dependencies>
 
-	</profile>
-
-	<profile>
-		<id>dev</id>
-
-		<dependencies>
-			<!-- https://mvnrepository.com/artifact/org.locationtech.jts/jts-core -->
-			<dependency>
-			    <groupId>org.locationtech.jts</groupId>
-			    <artifactId>jts-core</artifactId>
-			    <version>1.16.1</version>
-			</dependency>
-		</dependencies>
-
-	</profile>
-
-	</profiles>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.locationtech.jts/jts-core -->
+        <dependency>
+            <groupId>org.locationtech.jts</groupId>
+            <artifactId>jts-core</artifactId>
+            <version>1.16.1</version>
+        </dependency>
+    </dependencies>
 </project>
