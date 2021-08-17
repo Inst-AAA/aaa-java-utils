@@ -86,7 +86,7 @@
     <repositories>
         <repository>
             <id>jitpack.io</id>
-            <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss/</url>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 </project>
