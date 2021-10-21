@@ -1,7 +1,6 @@
 package basicTools;
 
 import org.locationtech.jts.geom.*;
-import processing.core.PApplet;
 import wblut.geom.*;
 
 import java.util.ArrayList;

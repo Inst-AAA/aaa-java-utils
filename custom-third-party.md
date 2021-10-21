@@ -1,5 +1,5 @@
 ## 第一类：Maven中央仓库或其他Maven仓库已有的常用第三方库
-**版本号** 请根据需要自行添加 ↓
+**版本号** 请根据需要从mvnrepository链接中选择版本号，替换“Tag” ↓
 #### 1. [Processing (core)](https://processing.org/)
 3.3.7 及以前 https://mvnrepository.com/artifact/org.processing/core
 ``` xml
