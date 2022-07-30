@@ -1,7 +1,7 @@
 ## 第一类：Maven中央仓库或其他Maven仓库已有的常用第三方库
 **版本号** 请根据需要从mvnrepository链接中选择版本号，替换“Tag” ↓
 #### 1. [Processing (core)](https://processing.org/)
-3.3.7 及以前 https://mvnrepository.com/artifact/org.processing/core
+Tag: 3.3.7 及以前 https://mvnrepository.com/artifact/org.processing/core
 ``` xml
     <dependency>
         <groupId>org.processing</groupId>
@@ -9,7 +9,7 @@
         <version>Tag</version>
     </dependency>
 ```
-3.3.7 以后 https://mvnrepository.com/artifact/quil/processing-core/3.5.4
+Tag: 3.3.7 以后 https://mvnrepository.com/artifact/quil/processing-core
 ``` xml
     <dependency>
         <groupId>quil</groupId>
@@ -24,7 +24,7 @@
     </repository>
 ```
 #### 2. GlueGen Runtime (Processing 必需)
-2.3.2 及以前 https://mvnrepository.com/artifact/org.jogamp.gluegen/gluegen-rt-main
+Tag: 2.3.2 及以前 https://mvnrepository.com/artifact/org.jogamp.gluegen/gluegen-rt-main
 ``` xml
     <dependency>
         <groupId>org.jogamp.gluegen</groupId>
@@ -33,7 +33,7 @@
     </dependency>
 ```
 #### 3. JOGL (Processing 必需)
-2.3.2 及以前 https://mvnrepository.com/artifact/org.jogamp.jogl/jogl-all-main
+Tag: 2.3.2 及以前 https://mvnrepository.com/artifact/org.jogamp.jogl/jogl-all-main
 ``` xml
     <dependency>
         <groupId>org.jogamp.jogl</groupId>
@@ -42,7 +42,7 @@
     </dependency>
 ```
 #### 4. [jts](https://github.com/locationtech/jts)
-1.15.0 及以后 https://mvnrepository.com/artifact/org.locationtech.jts/jts-core
+Tag: 1.15.0 及以后 https://mvnrepository.com/artifact/org.locationtech.jts/jts-core
 ``` xml
     <dependency>
         <groupId>org.locationtech.jts</groupId>
@@ -50,17 +50,25 @@
         <version>Tag</version>
     </dependency>
 ```
-1.13 及以前 https://mvnrepository.com/artifact/org.locationtech.jts/jts-core
+Tag: 1.14.0 https://mvnrepository.com/artifact/com.vividsolutions/jts-core
+``` xml
+    <dependency>
+        <groupId>com.vividsolutions</groupId>
+        <artifactId>jts-core</artifactId>
+        <version>Tag</version>
+    </dependency>
+```
+Tag: 1.13 及以前 https://mvnrepository.com/artifact/com.vividsolutions/jts
 ``` xml
     <dependency>
         <groupId>com.vividsolutions</groupId>
         <artifactId>jts</artifactId>
-        <version>1.13</version>
+        <version>Tag</version>
     </dependency>
 ```
 #### 5. [Gurobi](https://github.com/locationtech/jts)
 PS：Gurobi超乱，这里只放最新版和老版本  
-9.1.1 最新 https://mvnrepository.com/artifact/com.gurobi/gurobi-jar?repo=jena-bio-libs-release-oss
+Tag: 9.1.1 最新 https://mvnrepository.com/artifact/com.gurobi/gurobi-jar?repo=jena-bio-libs-release-oss
 ``` xml
     <dependency>
         <groupId>com.gurobi</groupId>
@@ -74,7 +82,7 @@ PS：Gurobi超乱，这里只放最新版和老版本
         <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss/</url>
     </repository>
 ```
-7.0.1 及以前 https://mvnrepository.com/artifact/com.gurobi/gurobi
+Tag: 7.0.1 及以前 https://mvnrepository.com/artifact/com.gurobi/gurobi
 ``` xml
     <dependency>
         <groupId>com.gurobi</groupId>
@@ -96,9 +104,9 @@ PS：Gurobi超乱，这里只放最新版和老版本
         <url>https://jitpack.io</url>
     </repository>
 ```
-#### **Step 2.** 将dependency添加到`pom.xml`的`<dependencies>`中
+#### **Step 2.** 将dependency添加到`pom.xml`的`<dependencies>`中，并根据项目需要更改对应的版本Tag
 #### 1. [HE_Mesh](https://github.com/wblut/HE_Mesh)  
-1.8.2, 2.0.3, 2.0.9, 3.0.3, 6.1.0, 2019.0.2
+Tags: 1.8.2, 2.0.3, 2.0.9, 3.0.3, 6.1.0, 2019.0.2
 ``` xml
     <dependency>
         <groupId>com.github.archialgo</groupId>
@@ -107,7 +115,7 @@ PS：Gurobi超乱，这里只放最新版和老版本
     </dependency>
 ```
 #### 2. [iGeo](https://github.com/sghr/iGeo)  
-0.9.3.0, 0.9.4.1, 0.9.4.1.1 (for Processing 2) 
+Tags: 0.9.3.0, 0.9.4.1, 0.9.4.1.1 (for Processing 2) 
 ``` xml
     <dependency>
         <groupId>com.github.archialgo</groupId>
@@ -116,7 +124,7 @@ PS：Gurobi超乱，这里只放最新版和老版本
     </dependency>
 ```
 #### 3. Guo_Cam by [Guo Zifeng](https://github.com/guozifeng91)  
-1.0, 1.1（左右键互换）
+Tags: 1.0, 1.1（左右键互换）
 ``` xml
     <dependency>
         <groupId>com.github.archialgo</groupId>
@@ -125,7 +133,7 @@ PS：Gurobi超乱，这里只放最新版和老版本
     </dependency>
 ```
 #### 4. [controlp5](https://github.com/sojamo/controlp5)  
-2.2.3, 2.2.5, 2.2.6
+Tags: 2.2.3, 2.2.5, 2.2.6
 ``` xml
     <dependency>
         <groupId>com.github.archialgo</groupId>
@@ -133,7 +141,7 @@ PS：Gurobi超乱，这里只放最新版和老版本
         <version>Tag</version>
     </dependency>
 ```
-2.2.4 
+Tag: 2.2.4 
 ``` xml
     <repository>
         <id>clojars.org</id>
@@ -148,7 +156,7 @@ PS：Gurobi超乱，这里只放最新版和老版本
     </dependency>
 ```
 #### 5. [BlobDetection](http://www.v3ga.net/)   
-1.0
+Tag: 1.0
 ``` xml
     <dependency>
         <groupId>com.github.archialgo</groupId>
