@@ -16,7 +16,7 @@ import java.util.List;
  * geometry tools
  *
  * @author Zhang Baizhou, Li Hongjian
- * @project aaa-jgeo-utils
+ * @project aaa-java-utils
  * @date 2021/8/17
  * @time 10:45
  */

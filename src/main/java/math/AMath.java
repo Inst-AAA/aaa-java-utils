@@ -1,19 +1,23 @@
 package math;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * math tools
  *
  * @author zhangbz ZHANG Baizhou
- * @project aaa-jgeo-utils
+ * @project aaa-java-utils
  * @date 2021/8/17
  * @time 16:48
  */
 public final class AMath {
 
-    /*-------- angle --------*/
+    /*-------- angle-related --------*/
 
     /**
      * sine value of half-angle
@@ -89,7 +93,32 @@ public final class AMath {
         return doubleSin(sin, cos) / doubleCos(cos);
     }
 
-    /*-------- array --------*/
+    /*-------- array-related --------*/
+
+    /**
+     * get the sum value of an array
+     *
+     * @param array double array
+     * @return double
+     */
+    public static double sum(final double[] array) {
+        double sum = 0;
+        for (double v : array) {
+            sum += v;
+        }
+        return sum;
+    }
+
+    /**
+     * get the average value of an array
+     *
+     * @param array double array
+     * @return double
+     */
+    public static double average(final double[] array) {
+        double sum = sum(array);
+        return sum / array.length;
+    }
 
     /**
      * create a series of ascending integer
@@ -102,6 +131,21 @@ public final class AMath {
         int[] result = new int[num];
         for (int i = 0; i < num; i++) {
             result[i] = start + i;
+        }
+        return result;
+    }
+
+    /**
+     * create a list of ascending integer
+     *
+     * @param start start index
+     * @param num   number of integers to create
+     * @return int[]
+     */
+    public static List<Integer> createIntegerList(final int start, final int num) {
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < num; i++) {
+            result.add(start + i);
         }
         return result;
     }
@@ -145,6 +189,51 @@ public final class AMath {
     }
 
     /**
+     * find the indices of maximum values in an array of double
+     *
+     * @param arr   input double array
+     * @param count number to select
+     * @return int[]
+     */
+    public static int[] getMaxIndices(final double[] arr, final int count) {
+        if (arr == null || arr.length == 0 || count > arr.length) {
+            int[] indices = new int[count];
+            Arrays.fill(indices, 0);
+            return indices;
+        }
+        int[] indices = new int[count];
+        double[] temp = Arrays.copyOf(arr, arr.length);
+        Arrays.sort(temp);
+        for (int i = 0; i < count; i++) {
+
+            indices[i] = ArrayUtils.indexOf(arr, temp[temp.length - 1 - i]);
+        }
+        return indices;
+    }
+
+    /**
+     * find the indices of minimum values in an array of double
+     *
+     * @param arr   input double array
+     * @param count number to select
+     * @return int[]
+     */
+    public static int[] getMinIndices(final double[] arr, final int count) {
+        if (arr == null || arr.length == 0 || count > arr.length) {
+            int[] indices = new int[count];
+            Arrays.fill(indices, 0);
+            return indices;
+        }
+        int[] indices = new int[count];
+        double[] temp = Arrays.copyOf(arr, arr.length);
+        Arrays.sort(temp);
+        for (int i = 0; i < count; i++) {
+            indices[i] = ArrayUtils.indexOf(arr, temp[i]);
+        }
+        return indices;
+    }
+
+    /**
      * sort a double by ascending order (return indices)
      *
      * @param arr array to be sorted
@@ -170,7 +259,235 @@ public final class AMath {
         return sortedIndices;
     }
 
-    /*-------- random --------*/
+    /**
+     * 2d euclidean distance
+     *
+     * @param x1 x1
+     * @param y1 y1
+     * @param x2 x2
+     * @param y2 y2
+     * @return double
+     */
+    public static double distance2D(final double x1, final double y1, final double x2, final double y2) {
+        return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    }
+
+    /**
+     * 3d euclidean distance
+     *
+     * @param x1 x1
+     * @param y1 y1
+     * @param z1 z1
+     * @param x2 x2
+     * @param y2 y2
+     * @param z2 z2
+     * @return double
+     */
+    public static double distance3D(final double x1, final double y1, final double z1, final double x2, final double y2, final double z2) {
+        return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2));
+    }
+
+    /**
+     * euclidean distance in n-dimension
+     *
+     * @param d1 vector 1
+     * @param d2 vector 2
+     * @return double
+     */
+    public static double distanceEuclidean(final double[] d1, final double[] d2) {
+        assert d1.length == d2.length : "input arrays must be the same dimension";
+        double sum = 0;
+        for (int i = 0; i < d1.length; i++) {
+            sum += (d1[i] - d2[i]) * (d1[i] - d2[i]);
+        }
+        return Math.sqrt(sum);
+    }
+
+    /**
+     * 2d manhattan distance
+     *
+     * @param x1 x1
+     * @param y1 y1
+     * @param x2 x2
+     * @param y2 y2
+     * @return double
+     */
+    public static double distanceManhattan2D(final double x1, final double y1, final double x2, final double y2) {
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    }
+
+    /**
+     * calculate the centroid of a series of array data
+     *
+     * @param data original data
+     * @return double[]
+     */
+    public static double[] dataCentroid(final double[][] data) {
+        int I = data.length;
+        int J = data[0].length;
+        double[] centroid = new double[J];
+        for (int j = 0; j < J; j++) {
+            double sum = 0;
+            for (double[] datum : data) {
+                sum += datum[j];
+            }
+            centroid[j] = sum / I;
+        }
+        return centroid;
+    }
+
+    /**
+     * merge several int arrays (as domains)
+     * https://blog.csdn.net/e891377/article/details/105559304
+     *
+     * @param intervals input
+     * @return int[][]
+     */
+    public static int[][] mergeIntArray(int[][] intervals) {
+        if (intervals.length == 0) return new int[0][0];
+        List<int[]> ans = new ArrayList<>();
+        int[] cur;
+        sort(intervals, 0, intervals.length - 1);
+        cur = intervals[0];
+        for (int i = 1; i < intervals.length; i++) {
+            if (intervals[i][0] <= cur[1]) {
+                if (intervals[i][1] > cur[1]) cur[1] = intervals[i][1];
+                else continue;
+            } else {
+                ans.add(cur);
+                cur = intervals[i];
+            }
+        }
+        ans.add(cur);
+
+        return ans.toArray(new int[ans.size()][]);
+    }
+
+    private static void sort(int[][] intervals, int l, int r) {
+        if (l >= r) return;
+        int p = partition(intervals, l, r);
+        sort(intervals, l, p - 1);
+        sort(intervals, p + 1, r);
+    }
+
+    private static int partition(int[][] intervals, int l, int r) {
+        int[] temp = intervals[l];
+        while (l < r) {
+            while (l < r) {
+                if (intervals[r][0] < temp[0]) {
+                    intervals[l] = intervals[r];
+                    break;
+                }
+                r--;
+            }
+            while (l < r) {
+                if (intervals[l][0] > temp[0]) {
+                    intervals[r] = intervals[l];
+                    break;
+                }
+                l++;
+            }
+        }
+        intervals[l] = temp;
+        return l;
+    }
+
+    /**
+     * merge several double arrays (as domains)
+     * https://blog.csdn.net/e891377/article/details/105559304
+     *
+     * @param intervals input
+     * @return double[][]
+     */
+    public static double[][] mergeDoubleArray(double[][] intervals) {
+        if (intervals.length == 0) return new double[0][0];
+        List<double[]> ans = new ArrayList<>();
+        double[] cur;
+        sort(intervals, 0, intervals.length - 1);
+        cur = intervals[0];
+        for (int i = 1; i < intervals.length; i++) {
+            if (intervals[i][0] <= cur[1]) {
+                if (intervals[i][1] > cur[1]) cur[1] = intervals[i][1];
+                else continue;
+            } else {
+                ans.add(cur);
+                cur = intervals[i];
+            }
+        }
+        ans.add(cur);
+
+        return ans.toArray(new double[ans.size()][]);
+    }
+
+    private static void sort(double[][] intervals, int l, int r) {
+        if (l >= r) return;
+        int p = partition(intervals, l, r);
+        sort(intervals, l, p - 1);
+        sort(intervals, p + 1, r);
+    }
+
+    private static int partition(double[][] intervals, int l, int r) {
+        double[] temp = intervals[l];
+        while (l < r) {
+            while (l < r) {
+                if (intervals[r][0] < temp[0]) {
+                    intervals[l] = intervals[r];
+                    break;
+                }
+                r--;
+            }
+            while (l < r) {
+                if (intervals[l][0] > temp[0]) {
+                    intervals[r] = intervals[l];
+                    break;
+                }
+                l++;
+            }
+        }
+        intervals[l] = temp;
+        return l;
+    }
+
+    /*-------- matrix --------*/
+
+    /**
+     * create a covariance matrix for a series of vector samples
+     *
+     * @param sample samples of vector
+     * @return double[][]
+     */
+    public static double[][] covarianceMatrix(final double[][] sample) {
+        // get variable space
+        double[][] variableSpace = new double[sample[0].length][sample.length];
+        for (int i = 0; i < sample.length; i++) {
+            for (int j = 0; j < sample[i].length; j++) {
+                variableSpace[j][i] = sample[i][j];
+            }
+        }
+        // get averages
+        double[] average = new double[sample[0].length];
+        for (int i = 0; i < average.length; i++) {
+            average[i] = average(variableSpace[i]);
+        }
+
+        // get covariance matrix
+        int n = sample.length; // row
+        int m = sample[0].length; // column
+        double[][] covarianceMatrix = new double[m][m];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < m; j++) {
+                double sum = 0;
+                for (int k = 0; k < n; k++) {
+                    sum += (variableSpace[i][k] - average[i]) * (variableSpace[j][k] - average[j]);
+                }
+                covarianceMatrix[i][j] = sum / (n - 1);
+            }
+        }
+//        System.out.println(Arrays.deepToString(covarianceMatrix));
+        return covarianceMatrix;
+    }
+
+    /*-------- map & random --------*/
 
     /**
      * generate random number by given floor and ceiling
@@ -228,8 +545,6 @@ public final class AMath {
         return getArraySortedIndices(random);
     }
 
-    /*-------- other --------*/
-
     /**
      * map a number from old region to a new region
      *
@@ -244,6 +559,8 @@ public final class AMath {
         double k = (newMax - newMin) / (oldMax - oldMin);
         return k * (num - oldMin) + newMin;
     }
+
+    /*-------- other --------*/
 
     /**
      * factorial

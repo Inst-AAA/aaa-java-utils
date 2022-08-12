@@ -8,7 +8,7 @@ import wblut.processing.WB_Render;
  * HE_Mesh and jts geometry renderer
  *
  * @author Li Biao, Zhang Baizhou
- * @project aaa-jgeo-utils
+ * @project aaa-java-utils
  * @date 2021/8/14
  * @time 22:47
  */

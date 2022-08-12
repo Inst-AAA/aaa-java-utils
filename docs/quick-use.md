@@ -21,7 +21,7 @@
 ```xml
 	<dependency>
 	    <groupId>com.github.Inst-AAA</groupId>
-	    <artifactId>aaa-jgeo-utils</artifactId>
+	    <artifactId>aaa-java-utils</artifactId>
 	    <version>Tag</version>
 	</dependency>
 ```

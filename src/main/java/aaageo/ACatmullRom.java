@@ -1,4 +1,4 @@
-package advancedTools;
+package aaageo;
 
 import aaageo.AGeoFactory;
 import aaageo.ATransform;
@@ -18,7 +18,7 @@ import java.util.List;
  * inspired by https://github.com/jurajstrecha/CatmullRomSpline
  *
  * @author zhangbz ZHANG Baizhou
- * @project aaa-jgeo-utils
+ * @project aaa-java-utils
  * @date 2021/8/17
  * @time 16:56
  */

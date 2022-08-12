@@ -11,7 +11,7 @@ import java.util.List;
  * including GeometryFactory in jts and WB_GeometryFactory in HE_Mesh
  *
  * @author zhangbz ZHANG Baizhou
- * @project aaa-jgeo-utils
+ * @project aaa-java-utils
  * @date 2021/8/14
  * @time 22:54
  */
