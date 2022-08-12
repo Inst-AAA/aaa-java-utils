@@ -8,5 +8,5 @@ package advancedTools;
  * @date 2021/8/17
  * @time 17:36
  */
-public class AAASkeleton {
+public class ASkeleton {
 }

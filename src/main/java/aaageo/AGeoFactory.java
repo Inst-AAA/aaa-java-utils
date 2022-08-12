@@ -1,4 +1,4 @@
-package basicTools;
+package aaageo;
 
 import org.locationtech.jts.geom.*;
 import wblut.geom.*;
@@ -15,7 +15,7 @@ import java.util.List;
  * @date 2021/8/14
  * @time 22:54
  */
-public final class AAAGeoFactory {
+public final class AGeoFactory {
     public static final WB_GeometryFactory wbgf = new WB_GeometryFactory();
     public static final GeometryFactory jtsgf = new GeometryFactory();
 
@@ -71,7 +71,7 @@ public final class AAAGeoFactory {
      * @return wblut.geom.WB_Polygon
      */
     public static WB_Polygon createWB_PolyWithHole(WB_Polygon out, WB_Polygon... in) {
-        WB_Coord[] outPts = AAAGeoOP.getShellPts(out);
+        WB_Coord[] outPts = AGeoOP.getShellPts(out);
         WB_Coord[][] ptsIn = new WB_Point[in.length][];
 
         for (int i = 0; i < in.length; i++) {

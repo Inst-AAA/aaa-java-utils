@@ -1,4 +1,4 @@
-package basicTools;
+package math;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import java.util.HashMap;
  * @date 2021/8/17
  * @time 16:48
  */
-public final class AAAMath {
+public final class AMath {
 
     /*-------- angle --------*/
 

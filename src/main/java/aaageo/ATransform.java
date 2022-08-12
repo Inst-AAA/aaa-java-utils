@@ -1,8 +1,10 @@
-package basicTools;
+package aaageo;
 
 import igeo.*;
 import org.locationtech.jts.geom.*;
 import wblut.geom.*;
+import wblut.hemesh.HEC_FromFacelist;
+import wblut.hemesh.HE_Mesh;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +17,10 @@ import java.util.List;
  * @date 2021/8/14
  * @time 22:49
  */
-public final class AAATransform {
+public final class ATransform {
+    private static final double epsilon = 0.00000001;
 
-    /*-------- IGeo <-> WB --------*/
+    /*-------- IGeo <-> HE_Mesh --------*/
 
     /**
      * WB_Coord -> IVec
@@ -82,13 +85,13 @@ public final class AAATransform {
             for (int i = 0; i < curve.cpNum(); i++) {
                 points[i] = new WB_Point(curve.cp(i).x(), curve.cp(i).y(), curve.cp(i).z());
             }
-            return AAAGeoFactory.wbgf.createPolyLine(points);
+            return AGeoFactory.wbgf.createPolyLine(points);
         } else if (curve.cpNum() > 2 && curve.isClosed()) {
             WB_Point[] points = new WB_Point[curve.cpNum()];
             for (int i = 0; i < curve.cpNum(); i++) {
                 points[i] = new WB_Point(curve.cp(i).x(), curve.cp(i).y(), curve.cp(i).z());
             }
-            return AAAGeoFactory.wbgf.createSimplePolygon(points);
+            return AGeoFactory.wbgf.createSimplePolygon(points);
         } else if (curve.cpNum() == 2) {
             WB_Point start = new WB_Point(curve.cp(0).x(), curve.cp(0).y(), curve.cp(0).z());
             WB_Point end = new WB_Point(curve.cp(1).x(), curve.cp(1).y(), curve.cp(1).z());
@@ -97,6 +100,20 @@ public final class AAATransform {
             System.out.println("***MAYBE OTHER TYPE OF GEOMETRY***");
             return null;
         }
+    }
+
+    /**
+     * ICurve -> WB_PolyLine
+     *
+     * @param curve input ICurve
+     * @return wblut.geom.WB_Geometry2D
+     */
+    public static WB_PolyLine ICurveToWB_PolyLine(final ICurve curve) {
+        WB_Point[] points = new WB_Point[curve.cpNum()];
+        for (int i = 0; i < curve.cpNum(); i++) {
+            points[i] = new WB_Point(curve.cp(i).x(), curve.cp(i).y(), curve.cp(i).z());
+        }
+        return AGeoFactory.wbgf.createPolyLine(points);
     }
 
     /**
@@ -112,13 +129,13 @@ public final class AAATransform {
             for (int i = 0; i < curve.cpNum(); i++) {
                 points[i] = new WB_Point(curve.cp(i).x(), curve.cp(i).y(), curve.cp(i).z()).scale(scale);
             }
-            return AAAGeoFactory.wbgf.createPolyLine(points);
+            return AGeoFactory.wbgf.createPolyLine(points);
         } else if (curve.cpNum() > 2 && curve.isClosed()) {
             WB_Point[] points = new WB_Point[curve.cpNum()];
             for (int i = 0; i < curve.cpNum(); i++) {
                 points[i] = new WB_Point(curve.cp(i).x(), curve.cp(i).y(), curve.cp(i).z()).scale(scale);
             }
-            return AAAGeoFactory.wbgf.createSimplePolygon(points);
+            return AGeoFactory.wbgf.createSimplePolygon(points);
         } else if (curve.cpNum() == 2) {
             WB_Point start = new WB_Point(curve.cp(0).x(), curve.cp(0).y(), curve.cp(0).z()).scale(scale);
             WB_Point end = new WB_Point(curve.cp(1).x(), curve.cp(1).y(), curve.cp(1).z()).scale(scale);
@@ -142,7 +159,7 @@ public final class AAATransform {
             for (int i = 0; i < curve.cpNum(); i++) {
                 points[i] = new WB_Point(curve.cp(i).x(), curve.cp(i).y(), curve.cp(i).z()).scale(scale);
             }
-            return AAAGeoFactory.wbgf.createPolyLine(points);
+            return AGeoFactory.wbgf.createPolyLine(points);
         } else {
             System.out.println("***MAYBE OTHER TYPE OF GEOMETRY***");
             return null;
@@ -199,6 +216,46 @@ public final class AAATransform {
         return new WB_Circle(IVecIToWB_Point(v), r);
     }
 
+    /**
+     * IVertex -> WB_Point
+     *
+     * @param vertex input IVertex
+     * @return wblut.geom.WB_Point
+     */
+    public static WB_Point IVertexToWB_Point(final IVertex vertex) {
+        return new WB_Point(vertex.x(), vertex.y(), vertex.z());
+    }
+
+    /**
+     * IMesh -> HE_Mesh
+     *
+     * @param mesh input IMesh
+     * @return wblut.hemesh.HE_Mesh
+     */
+    public static HE_Mesh IMeshToHE_Mesh(final IMesh mesh) {
+        ArrayList<IVertex> vertices = mesh.vertices();
+        List<WB_Point> pts = new ArrayList<>();
+        for (IVertex v : vertices) {
+            pts.add(IVertexToWB_Point(v));
+        }
+
+        List<int[]> faceList = new ArrayList<>();
+        for (int i = 0; i < mesh.faceNum(); i++) {
+            IFace face = mesh.face(i);
+            IVertex[] vInFace = face.vertices;
+            int[] id = new int[vInFace.length];
+            for (int j = 0; j < vInFace.length; j++) {
+                id[j] = vertices.indexOf(vInFace[j]);
+            }
+            faceList.add(id);
+        }
+
+        HEC_FromFacelist creator = new HEC_FromFacelist();
+        creator.setVertices(pts);
+        creator.setFaces(faceList);
+        return new HE_Mesh(creator);
+    }
+
     /*-------- IGeo <-> Jts --------*/
 
     /**
@@ -218,7 +275,7 @@ public final class AAATransform {
      * @return org.locationtech.jts.geom.Point
      */
     public static Point IVecIToPoint(final IVecI vec) {
-        return AAAGeoFactory.jtsgf.createPoint(IVecIToCoordinate(vec));
+        return AGeoFactory.jtsgf.createPoint(IVecIToCoordinate(vec));
     }
 
     /**
@@ -238,7 +295,7 @@ public final class AAATransform {
      * @return org.locationtech.jts.geom.Point
      */
     public static Point IPointToPoint(final IPoint point) {
-        return AAAGeoFactory.jtsgf.createPoint(IPointToCoordinate(point));
+        return AGeoFactory.jtsgf.createPoint(IPointToCoordinate(point));
     }
 
     /**
@@ -263,7 +320,12 @@ public final class AAATransform {
      * @return igeo.IPoint
      */
     public static IPoint PointToIPoint(final Point p) {
-        return new IPoint(p.getX(), p.getY(), 0);
+        Coordinate c = p.getCoordinate();
+        if (Double.isNaN(c.getZ())) {
+            return new IPoint(c.x, c.y, 0);
+        } else {
+            return new IPoint(c.x, c.y, c.getZ());
+        }
     }
 
     /**
@@ -303,26 +365,65 @@ public final class AAATransform {
             for (int i = 0; i < curve.cpNum(); i++) {
                 curvePts[i] = new Coordinate(curve.cp(i).x(), curve.cp(i).y(), curve.cp(i).z());
             }
-            return AAAGeoFactory.jtsgf.createPolygon(curvePts);
+            return AGeoFactory.jtsgf.createPolygon(curvePts);
         } else if (curve.cpNum() > 2 && !curve.isClosed()) {
             Coordinate[] curvePts = new Coordinate[curve.cpNum()];
             for (int i = 0; i < curve.cpNum(); i++) {
                 curvePts[i] = new Coordinate(curve.cp(i).x(), curve.cp(i).y(), curve.cp(i).z());
             }
-            return AAAGeoFactory.jtsgf.createLineString(curvePts);
+            return AGeoFactory.jtsgf.createLineString(curvePts);
         } else if (curve.cpNum() == 2) {
             Coordinate[] curvePts = new Coordinate[curve.cpNum()];
             for (int i = 0; i < curve.cpNum(); i++) {
                 curvePts[i] = new Coordinate(curve.cp(i).x(), curve.cp(i).y(), curve.cp(i).z());
             }
-            return AAAGeoFactory.jtsgf.createLineString(curvePts);
+            return AGeoFactory.jtsgf.createLineString(curvePts);
         } else {
             System.out.println("***MAYBE OTHER TYPE OF GEOMETRY***");
             return null;
         }
     }
 
-    /*-------- WB <-> Jts --------*/
+    /**
+     * ICurve -> LineString
+     *
+     * @param curve input ICurve
+     * @return org.locationtech.jts.geom.LineString
+     */
+    public static LineString ICurveToLineString(final ICurve curve) {
+        Coordinate[] curvePts = new Coordinate[curve.cpNum()];
+        for (int i = 0; i < curve.cpNum(); i++) {
+            curvePts[i] = new Coordinate(curve.cp(i).x(), curve.cp(i).y(), curve.cp(i).z());
+        }
+        return AGeoFactory.jtsgf.createLineString(curvePts);
+    }
+
+    /**
+     * LineString -> ICurve
+     *
+     * @param ls input LineString
+     * @return igeo.ICurve
+     */
+    public static ICurve LineStringToICurve(final LineString ls) {
+        IVec[] vecs = new IVec[ls.getNumPoints()];
+        for (int i = 0; i < vecs.length; i++) {
+            vecs[i] = CoordinateToIVec(ls.getCoordinateN(i));
+        }
+        return new ICurve(vecs);
+    }
+
+    /**
+     * Polygon -> ICurve (exterior ring only)
+     *
+     * @param poly input Polygon
+     * @return igeo.ICurve
+     */
+    public static ICurve PolygonToICurve(final Polygon poly) {
+        LineString exterior = poly.getExteriorRing();
+        return LineStringToICurve(exterior);
+    }
+
+    /*-------- HE_Mesh <-> Jts --------*/
 
     /**
      * WB_Coord -> Point
@@ -331,7 +432,7 @@ public final class AAATransform {
      * @return org.locationtech.jts.geom.Point
      */
     public static Point WB_CoordToPoint(final WB_Coord p) {
-        return AAAGeoFactory.jtsgf.createPoint(new Coordinate(p.xd(), p.yd(), p.zd()));
+        return AGeoFactory.jtsgf.createPoint(new Coordinate(p.xd(), p.yd(), p.zd()));
     }
 
     /**
@@ -340,7 +441,7 @@ public final class AAATransform {
      * @param p input Point
      * @return wblut.geom.WB_Point
      */
-    public static WB_Point CoordinateToWB_Point(final Point p) {
+    public static WB_Point PointToWB_Point(final Point p) {
         return new WB_Point(p.getX(), p.getY(), 0);
     }
 
@@ -382,14 +483,14 @@ public final class AAATransform {
                 for (int i = 0; i < wbp.getNumberOfPoints(); i++) {
                     coords[i] = new Coordinate(wbp.getPoint(i).xd(), wbp.getPoint(i).yd(), wbp.getPoint(i).zd());
                 }
-                return AAAGeoFactory.jtsgf.createPolygon(coords);
+                return AGeoFactory.jtsgf.createPolygon(coords);
             } else {
                 Coordinate[] coords = new Coordinate[wbp.getNumberOfPoints() + 1];
                 for (int i = 0; i < wbp.getNumberOfPoints(); i++) {
                     coords[i] = new Coordinate(wbp.getPoint(i).xd(), wbp.getPoint(i).yd(), wbp.getPoint(i).zd());
                 }
                 coords[wbp.getNumberOfPoints()] = coords[0];
-                return AAAGeoFactory.jtsgf.createPolygon(coords);
+                return AGeoFactory.jtsgf.createPolygon(coords);
             }
         } else {
             // exterior
@@ -397,10 +498,11 @@ public final class AAATransform {
             for (int i = 0; i < wbp.getNumberOfShellPoints(); i++) {
                 exteriorCoords.add(new Coordinate(wbp.getPoint(i).xd(), wbp.getPoint(i).yd(), wbp.getPoint(i).zd()));
             }
-            if (exteriorCoords.get(0).equals3D(exteriorCoords.get(exteriorCoords.size() - 1))) {
+            if (!exteriorCoords.get(0).equals3D(exteriorCoords.get(exteriorCoords.size() - 1))) {
+                System.out.println("here");
                 exteriorCoords.add(exteriorCoords.get(0));
             }
-            LinearRing exteriorLinearRing = AAAGeoFactory.jtsgf.createLinearRing(exteriorCoords.toArray(new Coordinate[0]));
+            LinearRing exteriorLinearRing = AGeoFactory.jtsgf.createLinearRing(exteriorCoords.toArray(new Coordinate[0]));
 
             // interior
             final int[] npc = wbp.getNumberOfPointsPerContour();
@@ -415,10 +517,10 @@ public final class AAATransform {
                 if (!contour.get(0).equals3D(contour.get(contour.size() - 1))) {
                     contour.add(contour.get(0));
                 }
-                interiorLinearRings[i] = AAAGeoFactory.jtsgf.createLinearRing(contour.toArray(new Coordinate[0]));
+                interiorLinearRings[i] = AGeoFactory.jtsgf.createLinearRing(contour.toArray(new Coordinate[0]));
             }
 
-            return AAAGeoFactory.jtsgf.createPolygon(exteriorLinearRing, interiorLinearRings);
+            return AGeoFactory.jtsgf.createPolygon(exteriorLinearRing, interiorLinearRings);
         }
     }
 
@@ -466,12 +568,7 @@ public final class AAATransform {
     public static WB_PolyLine LineStringToWB_PolyLine(final LineString ls) {
         WB_Coord[] points = new WB_Point[ls.getNumPoints()];
         for (int i = 0; i < ls.getNumPoints(); i++) {
-            double z = ls.getCoordinates()[i].getZ();
-            if (Double.isNaN(z)) {
-                points[i] = new WB_Point(ls.getCoordinates()[i].x, ls.getCoordinates()[i].y, 0);
-            } else {
-                points[i] = new WB_Point(ls.getCoordinates()[i].x, ls.getCoordinates()[i].y, z);
-            }
+            points[i] = CoordinateToWB_Point(ls.getCoordinateN(i));
         }
         return new WB_PolyLine(points);
     }
@@ -486,7 +583,7 @@ public final class AAATransform {
         Coordinate[] coords = new Coordinate[2];
         coords[0] = new Coordinate(seg.getOrigin().xd(), seg.getOrigin().yd(), seg.getOrigin().zd());
         coords[1] = new Coordinate(seg.getEndpoint().xd(), seg.getEndpoint().yd(), seg.getEndpoint().zd());
-        return AAAGeoFactory.jtsgf.createLineString(coords);
+        return AGeoFactory.jtsgf.createLineString(coords);
     }
 
     /**
@@ -500,7 +597,7 @@ public final class AAATransform {
         for (int i = 0; i < wbp.getNumberOfPoints(); i++) {
             coords[i] = new Coordinate(wbp.getPoint(i).xd(), wbp.getPoint(i).yd(), wbp.getPoint(i).zd());
         }
-        return AAAGeoFactory.jtsgf.createLineString(coords);
+        return AGeoFactory.jtsgf.createLineString(coords);
     }
 
     /**
@@ -516,7 +613,7 @@ public final class AAATransform {
             for (int i = 0; i < wbp.getNumberOfShellPoints(); i++) {
                 shellCoords[i] = new Coordinate(wbp.getPoint(i).xd(), wbp.getPoint(i).yd(), wbp.getPoint(i).zd());
             }
-            result.add(AAAGeoFactory.jtsgf.createLineString(shellCoords));
+            result.add(AGeoFactory.jtsgf.createLineString(shellCoords));
 
             // holes
             final int[] npc = wbp.getNumberOfPointsPerContour();
@@ -527,14 +624,14 @@ public final class AAATransform {
                     holeCoords[j] = new Coordinate(wbp.getPoint(index).xd(), wbp.getPoint(index).yd(), wbp.getPoint(index).zd());
                     index++;
                 }
-                result.add(AAAGeoFactory.jtsgf.createLineString(holeCoords));
+                result.add(AGeoFactory.jtsgf.createLineString(holeCoords));
             }
         } else {
             Coordinate[] shellCoords = new Coordinate[wbp.getNumberOfShellPoints()];
             for (int i = 0; i < wbp.getNumberOfShellPoints(); i++) {
                 shellCoords[i] = new Coordinate(wbp.getPoint(i).xd(), wbp.getPoint(i).yd(), wbp.getPoint(i).zd());
             }
-            result.add(AAAGeoFactory.jtsgf.createLineString(shellCoords));
+            result.add(AGeoFactory.jtsgf.createLineString(shellCoords));
         }
         return result;
     }
@@ -575,7 +672,7 @@ public final class AAATransform {
             // exterior
             WB_Coord[] exteriorPoints = new WB_Point[p.getExteriorRing().getNumPoints()];
             for (int i = 0; i < p.getExteriorRing().getNumPoints(); i++) {
-                exteriorPoints[i] = new WB_Point(p.getCoordinates()[i].x, p.getCoordinates()[i].y, p.getCoordinates()[i].z);
+                exteriorPoints[i] = CoordinateToWB_Point(p.getCoordinates()[i]);
             }
             result.add(new WB_PolyLine(exteriorPoints));
             // interior
@@ -587,14 +684,14 @@ public final class AAATransform {
         } else {
             WB_Coord[] points = new WB_Point[p.getNumPoints()];
             for (int i = 0; i < p.getNumPoints(); i++) {
-                points[i] = new WB_Point(p.getCoordinates()[i].x, p.getCoordinates()[i].y, p.getCoordinates()[i].z);
+                points[i] = CoordinateToWB_Point(p.getCoordinates()[i]);
             }
             result.add(new WB_PolyLine(points));
         }
         return result;
     }
 
-    /*-------- WB <-> WB --------*/
+    /*-------- HE_Mesh <-> HE_Mesh --------*/
 
     /**
      * check the start point and the end point of a WB_Polygon
@@ -610,7 +707,7 @@ public final class AAATransform {
             } else {
                 List<WB_Coord> points = polygon.getPoints().toList();
                 points.add(polygon.getPoint(0));
-                return AAAGeoFactory.wbgf.createSimplePolygon(points);
+                return AGeoFactory.wbgf.createSimplePolygon(points);
             }
         } else {
             boolean flag = true;
@@ -641,7 +738,7 @@ public final class AAATransform {
             if (flag) {
                 return polygon;
             } else {
-                return AAAGeoFactory.wbgf.createPolygonWithHoles(exterior.toArray(new WB_Point[0]), interior);
+                return AGeoFactory.wbgf.createPolygonWithHoles(exterior.toArray(new WB_Point[0]), interior);
             }
         }
     }
@@ -660,7 +757,7 @@ public final class AAATransform {
             for (int i = 0; i < polygon.getNumberOfShellPoints(); i++) {
                 shellPoints[i] = polygon.getPoint(i);
             }
-            result.add(AAAGeoFactory.wbgf.createPolyLine(shellPoints));
+            result.add(AGeoFactory.wbgf.createPolyLine(shellPoints));
 
             // holes
             final int[] npc = polygon.getNumberOfPointsPerContour();
@@ -671,14 +768,14 @@ public final class AAATransform {
                     holePoints[j] = polygon.getPoint(index);
                     index++;
                 }
-                result.add(AAAGeoFactory.wbgf.createPolyLine(holePoints));
+                result.add(AGeoFactory.wbgf.createPolyLine(holePoints));
             }
         } else {
             WB_Point[] points = new WB_Point[polygon.getNumberOfPoints()];
             for (int i = 0; i < points.length; i++) {
                 points[i] = polygon.getPoint(i);
             }
-            result.add(AAAGeoFactory.wbgf.createPolyLine(points));
+            result.add(AGeoFactory.wbgf.createPolyLine(points));
         }
         return result;
     }
@@ -701,6 +798,18 @@ public final class AAATransform {
     /*-------- jts <-> jts --------*/
 
     /**
+     * validate z ordinate of jts Geometry (NaN -> 0)
+     *
+     * @param geo original Geometry
+     */
+    public static void validateGeometry3D(Geometry geo) {
+        Coordinate[] coords = new Coordinate[geo.getNumPoints()];
+        for (int i = 0; i < geo.getNumPoints(); i++) {
+            geo.getCoordinates()[i].setZ(0);
+        }
+    }
+
+    /**
      * Polygon -> LineString
      *
      * @param polygon input Polygon
@@ -709,7 +818,7 @@ public final class AAATransform {
     public static List<LineString> PolygonToLineString(final Polygon polygon) {
         List<LineString> result = new ArrayList<>();
         if (polygon.getNumInteriorRing() == 0) {
-            result.add(AAAGeoFactory.jtsgf.createLineString(polygon.getCoordinates()));
+            result.add(AGeoFactory.jtsgf.createLineString(polygon.getCoordinates()));
         } else {
             result.add(polygon.getExteriorRing());
             for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
@@ -727,15 +836,25 @@ public final class AAATransform {
      */
     public static Polygon LineStringToPolygon(final LineString ls) {
         if (ls.isClosed()) {
-            return AAAGeoFactory.jtsgf.createPolygon(ls.getCoordinates());
+            return AGeoFactory.jtsgf.createPolygon(ls.getCoordinates());
         } else {
             Coordinate[] polyCoords = new Coordinate[ls.getNumPoints() + 1];
             for (int i = 0; i < ls.getNumPoints(); i++) {
                 polyCoords[i] = ls.getCoordinateN(i);
             }
             polyCoords[polyCoords.length - 1] = polyCoords[0];
-            return AAAGeoFactory.jtsgf.createPolygon(polyCoords);
+            return AGeoFactory.jtsgf.createPolygon(polyCoords);
         }
     }
 
+    /**
+     * LineString -> LinearRing
+     *
+     * @param ls input LineString
+     * @return org.locationtech.jts.geom.LinearRing
+     */
+    public static LinearRing LineStringToLinearRing(final LineString ls) {
+        Coordinate[] coordinates = ls.getCoordinates();
+        return AGeoFactory.jtsgf.createLinearRing(coordinates);
+    }
 }

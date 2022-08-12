@@ -1,7 +1,7 @@
 package advancedTools;
 
-import basicTools.AAAGeoFactory;
-import basicTools.AAATransform;
+import aaageo.AGeoFactory;
+import aaageo.ATransform;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Polygon;
@@ -22,7 +22,7 @@ import java.util.List;
  * @date 2021/8/17
  * @time 16:56
  */
-public class AAACatmullRom {
+public class ACatmullRom {
     private int dividePerSpan = 10;
     private boolean closed = false;
 
@@ -31,7 +31,7 @@ public class AAACatmullRom {
 
     /* ------------- constructor ------------- */
 
-    public AAACatmullRom(List<WB_Point> controlPoints, int samplesPerSpan, boolean closed) {
+    public ACatmullRom(List<WB_Point> controlPoints, int samplesPerSpan, boolean closed) {
         setDividePerSpan(samplesPerSpan);
         setClosed(closed);
 
@@ -39,7 +39,7 @@ public class AAACatmullRom {
         this.curveDividePts = calculateCatmull(curveControlPts);
     }
 
-    public AAACatmullRom(WB_Coord[] controlPoints, int samplesPerSpan, boolean closed) {
+    public ACatmullRom(WB_Coord[] controlPoints, int samplesPerSpan, boolean closed) {
         setDividePerSpan(samplesPerSpan);
         setClosed(closed);
 
@@ -205,9 +205,9 @@ public class AAACatmullRom {
         Coordinate[] coordinates = new Coordinate[curveDividePts.size()];
         int length = coordinates.length;
         for (int i = 0; i < length; i++) {
-            coordinates[i] = AAATransform.WB_CoordToCoordinate(curveDividePts.get(i));
+            coordinates[i] = ATransform.WB_CoordToCoordinate(curveDividePts.get(i));
         }
-        return AAAGeoFactory.jtsgf.createLineString(coordinates);
+        return AGeoFactory.jtsgf.createLineString(coordinates);
     }
 
     public WB_Polygon getAsWB_Polygon() {
@@ -218,8 +218,8 @@ public class AAACatmullRom {
         Coordinate[] coordinates = new Coordinate[curveDividePts.size()];
         int length = coordinates.length;
         for (int i = 0; i < length; i++) {
-            coordinates[i] = AAATransform.WB_CoordToCoordinate(curveDividePts.get(i));
+            coordinates[i] = ATransform.WB_CoordToCoordinate(curveDividePts.get(i));
         }
-        return AAAGeoFactory.jtsgf.createPolygon(coordinates);
+        return AGeoFactory.jtsgf.createPolygon(coordinates);
     }
 }

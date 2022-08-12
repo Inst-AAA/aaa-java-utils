@@ -1,5 +1,6 @@
-package basicTools;
+package aaageo;
 
+import math.AMath;
 import org.locationtech.jts.algorithm.MinimumDiameter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
@@ -19,7 +20,8 @@ import java.util.List;
  * @date 2021/8/17
  * @time 10:45
  */
-public final class AAAGeoOP {
+public final class AGeoOP {
+    public static final double epsilon = 0.00000001;
 
     /*-------- vector & angle --------*/
 
@@ -43,7 +45,7 @@ public final class AAAGeoOP {
      *
      * @param v1 first vector
      * @param v2 second vector
-     * @return geometry.ZPoint
+     * @return wblut.geom.WB_Vector
      */
     public static WB_Vector getAngleBisectorOrdered(final WB_Vector v1, final WB_Vector v2) {
         if (WB_CoordOp2D.cross2D(v1, v2) > 0) {
@@ -77,12 +79,61 @@ public final class AAAGeoOP {
             double curr_value = Math.atan2(vectors.get(i).yd(), vectors.get(i).xd());
             atanValue[i] = curr_value;
         }
-        return AAAMath.getArraySortedIndices(atanValue);
+        return AMath.getArraySortedIndices(atanValue);
     }
 
     /*-------- geometry boundary split methods --------*/
 
+    /**
+     * split polyline by given step
+     *
+     * @param pl   input polyline
+     * @param step step to split
+     * @return java.util.List<wblut.geom.WB_Point>
+     */
+    public static List<WB_Point> splitPolyLineByStep(final WB_PolyLine pl, final double step) {
+        WB_Point start = pl.getPoint(0);
+        WB_Point end = pl.getPoint(pl.getNumberOfPoints() - 1);
 
+        WB_Point p1 = start;
+        double curr_span = step;
+        double curr_dist;
+
+        List<WB_Point> result = new ArrayList<>();
+        result.add(p1.copy());
+        for (int i = 1; i < pl.getNumberOfPoints(); i++) {
+            WB_Point p2 = pl.getPoint(i);
+            curr_dist = p1.getDistance2D(p2);
+            while (curr_dist >= curr_span) {
+                WB_Vector v = p2.sub(p1);
+                v.normalizeSelf();
+                v.scaleSelf(curr_span);
+
+                WB_Point p = p1.add(v);
+
+                result.add(p);
+                p1 = p;
+                curr_span = step;
+                curr_dist = p1.getDistance2D(p2);
+            }
+            p1 = p2;
+            curr_span = curr_span - curr_dist;
+        }
+
+        // close: pt num = seg num
+        // open: pt num = seg num + 1
+        if (pl instanceof WB_Ring) {
+            if (start.getDistance2D(result.get(result.size() - 1)) < epsilon) {
+                result.remove(result.size() - 1);
+            }
+        } else {
+            if (end.getDistance2D(result.get(result.size() - 1)) > epsilon) {
+                result.add(end.copy());
+            }
+        }
+
+        return result;
+    }
 
     /*-------- polygon methods --------*/
 
@@ -131,7 +182,7 @@ public final class AAAGeoOP {
      * @return java.util.List<java.lang.Integer> - indices of input polygon
      */
     public static List<Integer> getConcavePoints(final Polygon polygon) {
-        WB_Polygon wbPolygon = AAATransform.PolygonToWB_Polygon(polygon);
+        WB_Polygon wbPolygon = ATransform.PolygonToWB_Polygon(polygon);
         return getConcavePoints(wbPolygon);
     }
 
@@ -142,7 +193,7 @@ public final class AAAGeoOP {
      * @return geometry.ZPoint
      */
     public static WB_Vector miniRectDir(final WB_Polygon polygon) {
-        Polygon rect = (Polygon) MinimumDiameter.getMinimumRectangle(AAATransform.WB_PolygonToPolygon(polygon));
+        Polygon rect = (Polygon) MinimumDiameter.getMinimumRectangle(ATransform.WB_PolygonToPolygon(polygon));
         return miniRectDir(rect);
     }
 
@@ -154,9 +205,9 @@ public final class AAAGeoOP {
      */
     public static WB_Vector miniRectDir(final Polygon polygon) {
         Polygon rect = (Polygon) MinimumDiameter.getMinimumRectangle(polygon);
-        WB_Point c0 = AAATransform.CoordinateToWB_Point(rect.getCoordinates()[0]);
-        WB_Point c1 = AAATransform.CoordinateToWB_Point(rect.getCoordinates()[1]);
-        WB_Point c2 = AAATransform.CoordinateToWB_Point(rect.getCoordinates()[2]);
+        WB_Point c0 = ATransform.CoordinateToWB_Point(rect.getCoordinates()[0]);
+        WB_Point c1 = ATransform.CoordinateToWB_Point(rect.getCoordinates()[1]);
+        WB_Point c2 = ATransform.CoordinateToWB_Point(rect.getCoordinates()[2]);
 
 
         WB_Vector dir1 = c0.sub(c1);
@@ -249,7 +300,7 @@ public final class AAAGeoOP {
      * @return int[]  0 -> longest 1 -> shortest
      */
     public static int[] getLongestAndShortestSegment(final WB_Polygon polygon) {
-        WB_Polygon valid = AAATransform.validateWB_Polygon(polygon);
+        WB_Polygon valid = ATransform.validateWB_Polygon(polygon);
         int maxIndex = 0;
         int minIndex = 0;
         double maxLength = valid.getPoint(0).getSqDistance(valid.getPoint(1));
@@ -278,7 +329,7 @@ public final class AAAGeoOP {
      */
     public static WB_Segment offsetWB_PolygonSegment(final WB_Polygon poly, final int index, final double dist) {
         // make sure polygon's start and end point are coincident
-        WB_Polygon polygon = AAATransform.validateWB_Polygon(poly);
+        WB_Polygon polygon = ATransform.validateWB_Polygon(poly);
         assert index <= polygon.getNumberSegments() && index >= 0 : "index out of polygon point number";
 
         int next = (index + 1) % polygon.getNumberSegments();
@@ -308,7 +359,7 @@ public final class AAAGeoOP {
      */
     public static WB_PolyLine offsetWB_PolygonSegments(final WB_Polygon poly, final int[] index, final double dist) {
         // make sure polygon's start and end point are coincident
-        WB_Polygon polygon = AAATransform.validateWB_Polygon(poly);
+        WB_Polygon polygon = ATransform.validateWB_Polygon(poly);
 
         WB_Point[] linePoints = new WB_Point[index.length + 1];
         for (int i = 0; i < index.length; i++) {
