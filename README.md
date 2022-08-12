@@ -13,10 +13,10 @@
 
 详见：[自定义第三方库说明](docs/custom-third-party.md)
 
-## 快速打包使用（暂未发布）
+## 快速打包使用
 将本仓库工具代码连同所有最新依赖库一并添加到Maven依赖中
 
 详见：[快速打包使用说明](docs/quick-use.md)
 
-## 测试例子（暂无）
-[test examples](./src/test/java)   
+## 关于代码维护的说明
+[代码维护说明](docs/code-maintainance.md)   

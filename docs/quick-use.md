@@ -1,27 +1,6 @@
-## 快速使用（暂未发布）
+## 快速使用
 
-**快速使用将通过Maven把本仓库的代码打包，和本仓库所需的第三方必要依赖一同加入你的项目依赖**
+**快速使用将通过Maven把本仓库的代码打包(连同依赖)加入你的项目依赖**
 
-必要依赖包括：Processing, jts, [HE_Mesh](https://github.com/wblut/HE_Mesh), [iGeo](https://github.com/sghr/iGeo), Guo_Cam
+本仓库已通过Github Packages部署，用法详见[com.github.Inst-AAA.aaa-java-utils](https://github.com/orgs/Inst-AAA/packages?repo_name=aaa-java-utils)
 
-上述必要依赖将默认使用各自最新版（在互相之间不发生版本冲突的情况下）
-
-#### **Step 1.** 将JitPack repository添加到`pom.xml`的`<repositories>`中
-``` xml
-	<repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-```
-
-#### **Step 2.** 将dependency添加到`pom.xml`的`<dependencies>`中，并根据项目需要更改对应的版本Tag
-
-```xml
-	<dependency>
-	    <groupId>com.github.Inst-AAA</groupId>
-	    <artifactId>aaa-java-utils</artifactId>
-	    <version>Tag</version>
-	</dependency>
-```
