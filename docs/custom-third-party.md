@@ -96,7 +96,7 @@ Tag: 7.0.1 及以前 https://mvnrepository.com/artifact/com.gurobi/gurobi
         <url>http://cogcomp.org/m2repo/</url>
     </repository>
 ```
-## 第二类：其他第三方库，目前已被手动整理至Jitpack的Maven仓库
+## 第二类：其他第三方库，目前已被手动整理至JitPack的Maven远程仓库
 #### **Step 1.** 将JitPack repository添加到`pom.xml`的`<repositories>`中
 ``` xml
     <repository>
