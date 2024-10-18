@@ -137,7 +137,7 @@ Tags: 2.2.3, 2.2.5, 2.2.6
 ``` xml
     <dependency>
         <groupId>com.github.archialgo</groupId>
-        <artifactId>iGeo-maven-lib</artifactId>
+        <artifactId>controlp5-maven-lib</artifactId>
         <version>Tag</version>
     </dependency>
 ```
@@ -160,7 +160,7 @@ Tag: 1.0
 ``` xml
     <dependency>
         <groupId>com.github.archialgo</groupId>
-        <artifactId>iGeo-maven-lib</artifactId>
+        <artifactId>BlobDetection-maven-lib</artifactId>
         <version>1.0</version>
     </dependency>
 ```
