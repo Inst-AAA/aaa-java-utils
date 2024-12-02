@@ -1,5 +1,5 @@
 ## 第一类：Maven中央仓库或其他Maven仓库已有的常用第三方库
-**版本号** 请根据需要从mvnrepository链接中选择版本号，替换“Tag” ↓
+### 请根据需要从mvnrepository链接中选择版本号，替换“Tag” ！！！
 #### 1. [Processing (core)](https://processing.org/)
 Tag: 3.3.7 及以前 https://mvnrepository.com/artifact/org.processing/core
 ``` xml
@@ -95,6 +95,25 @@ Tag: 7.0.1 及以前 https://mvnrepository.com/artifact/com.gurobi/gurobi
         <id>cogcomp.org</id>
         <url>http://cogcomp.org/m2repo/</url>
     </repository>
+```
+#### 6. [Gson](https://github.com/google/gson)
+https://mvnrepository.com/artifact/com.google.code.gson/gson
+``` xml
+    <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>Tag</version>
+    </dependency>
+```
+#### 7. [PeasyCam](https://mrfeinberg.com/peasycam/)
+https://mvnrepository.com/artifact/org.clojars.skv/peasycam/201
+仅有一个版本
+``` xml
+    <dependency>
+        <groupId>org.clojars.skv</groupId>
+        <artifactId>peasycam</artifactId>
+        <version>201</version>
+    </dependency>
 ```
 ## 第二类：其他第三方库，目前已被手动整理至JitPack的Maven远程仓库
 #### **Step 1.** 将JitPack repository添加到`pom.xml`的`<repositories>`中
